@@ -23,22 +23,22 @@ Here's the template:
 *******************************************************************************
 ### What organization or people are asking to have this signed?
 *******************************************************************************
-[your text here]
+Fortinet
 
 *******************************************************************************
 ### What product or service is this for?
 *******************************************************************************
-[your text here]
+FortiOS
 
 *******************************************************************************
 ### What's the justification that this really does need to be signed for the whole world to be able to boot it?
 *******************************************************************************
-[your text here]
+FortiOS is a linux based Firewall software. We want to support our users to boot FortiOS with secure boot enabled.
 
 *******************************************************************************
 ### Why are you unable to reuse shim from another distro that is already signed?
 *******************************************************************************
-[your text here]
+Reusing another distro's shim would require reusing their grub and kernel as well. We need to build our own kernel, so this would not work.
 
 *******************************************************************************
 ### Who is the primary contact for security updates, etc.?
@@ -47,9 +47,9 @@ The security contacts need to be verified before the shim can be accepted. For s
 An authorized reviewer will initiate contact verification by sending each security contact a PGP-encrypted email containing random words.
 You will be asked to post the contents of these mails in your `shim-review` issue to prove ownership of the email addresses and PGP keys.
 *******************************************************************************
-- Name:
-- Position:
-- Email address:
+- Name: Colin Wen
+- Position: Senior Director Software Development
+- Email address: gwen@fortinet.com
 - PGP key fingerprint:
 
 (Key should be signed by the other security contacts, pushed to a keyserver
@@ -59,9 +59,9 @@ well known in the Linux community.)
 *******************************************************************************
 ### Who is the secondary contact for security updates, etc.?
 *******************************************************************************
-- Name:
-- Position:
-- Email address:
+- Name: Alex Zou
+- Position: Senior Software Engineer
+- Email address:lzou@fortinet.com
 - PGP key fingerprint:
 
 (Key should be signed by the other security contacts, pushed to a keyserver
@@ -75,22 +75,23 @@ Please create your shim binaries starting with the 15.7 shim release tar file: h
 This matches https://github.com/rhboot/shim/releases/tag/15.7 and contains the appropriate gnu-efi source.
 
 *******************************************************************************
-[your text here]
+We confirm that our shim binaries are built from the referenced tarball.
 
 *******************************************************************************
 ### URL for a repo that contains the exact code which was built to get this binary:
 *******************************************************************************
-[your url here]
+https://github.com/rhboot/shim/tree/15.7
 
 *******************************************************************************
 ### What patches are being applied and why:
 *******************************************************************************
-[your text here]
+No patches are applied
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader what exact implementation of Secureboot in GRUB2 do you have? (Either Upstream GRUB2 shim_lock verifier or Downstream RHEL/Fedora/Debian/Canonical-like implementation)
 *******************************************************************************
-[your text here]
+Upstream GRUB2 2.06 with shim_lock verifier. This verifier is included as long as --disable-shim-lock wasn't passed to grub-mkimage (and we do not set that flag). The verifier is enabled automatically when UEFI Secure Boot is enabled. Reference:
+https://www.gnu.org/software/grub/manual/grub/html_node/UEFI-secure-boot-and-shim.html
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader and your previously released shim booted a version of GRUB2 affected by any of the CVEs in the July 2020, the March 2021, the June 7th 2022, the November 15th 2022, or 3rd of October 2023 GRUB2 CVE list, have fixes for all these CVEs been applied?
@@ -134,19 +135,19 @@ This matches https://github.com/rhboot/shim/releases/tag/15.7 and contains the a
   * CVE-2023-4693
   * CVE-2023-4692
 *******************************************************************************
-[your text here]
+Yes.
 
 *******************************************************************************
 ### If these fixes have been applied, is the upstream global SBAT generation in your GRUB2 binary set to 4?
 The entry should look similar to: `grub,4,Free Software Foundation,grub,GRUB_UPSTREAM_VERSION,https://www.gnu.org/software/grub/`
 *******************************************************************************
-[your text here]
+Yes.
 
 *******************************************************************************
 ### Were old shims hashes provided to Microsoft for verification and to be added to future DBX updates?
 ### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
 *******************************************************************************
-[your text here]
+We have not provied shim image to Microsoft before. Our current cert has not been used to sign anything pre-SBAT.
 
 *******************************************************************************
 ### If your boot chain of trust includes a Linux kernel:
@@ -154,12 +155,12 @@ The entry should look similar to: `grub,4,Free Software Foundation,grub,GRUB_UPS
 ### Is upstream commit [75b0cea7bf307f362057cc778efe89af4c615354 "ACPI: configfs: Disallow loading ACPI tables when locked down"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=75b0cea7bf307f362057cc778efe89af4c615354) applied?
 ### Is upstream commit [eadb2f47a3ced5c64b23b90fd2a3463f63726066 "lockdown: also lock down previous kgdb use"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eadb2f47a3ced5c64b23b90fd2a3463f63726066) applied?
 *******************************************************************************
-[your text here]
+Yes, all three commits are applied.
 
 *******************************************************************************
 ### Do you build your signed kernel with additional local patches? What do they do?
 *******************************************************************************
-[your text here]
+We have some local kernel patches to provide firewall services that are not in standard linux kernel.
 
 *******************************************************************************
 ### Do you use an ephemeral key for signing kernel modules?
