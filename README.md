@@ -50,7 +50,7 @@ You will be asked to post the contents of these mails in your `shim-review` issu
 - Name: Colin Wen
 - Position: Senior Director Software Development
 - Email address: gwen@fortinet.com
-- PGP key fingerprint:
+- PGP key fingerprint: 3819 A333 7DC9 07A5 624C  EC0B B1A6 BCD1 BB92 76D8
 
 (Key should be signed by the other security contacts, pushed to a keyserver
 like keyserver.ubuntu.com, and preferably have signatures that are reasonably
@@ -62,7 +62,7 @@ well known in the Linux community.)
 - Name: Alex Zou
 - Position: Senior Software Engineer
 - Email address:lzou@fortinet.com
-- PGP key fingerprint:
+- PGP key fingerprint: 94A4 E88B 4819 C5D8 5262  8513 7712 F4D0 F3CF 3EA7
 
 (Key should be signed by the other security contacts, pushed to a keyserver
 like keyserver.ubuntu.com, and preferably have signatures that are reasonably
@@ -147,7 +147,7 @@ Yes.
 ### Were old shims hashes provided to Microsoft for verification and to be added to future DBX updates?
 ### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
 *******************************************************************************
-We have not provied shim image to Microsoft before. Our current cert has not been used to sign anything pre-SBAT.
+This is our first shim submission, this shim build disallow booting old GRUB2 builds affected by the CVEs.
 
 *******************************************************************************
 ### If your boot chain of trust includes a Linux kernel:
@@ -166,51 +166,52 @@ We have some local kernel patches to provide firewall services that are not in s
 ### Do you use an ephemeral key for signing kernel modules?
 ### If not, please describe how you ensure that one kernel build does not load modules built for another kernel.
 *******************************************************************************
-[your text here]
+Yes, FortiOS uses ephemeral key for signing kernel module.
 
 *******************************************************************************
 ### If you use vendor_db functionality of providing multiple certificates and/or hashes please briefly describe your certificate setup.
 ### If there are allow-listed hashes please provide exact binaries for which hashes are created via file sharing service, available in public with anonymous access for verification.
 *******************************************************************************
-[your text here]
+We do not use vendor_db functionality.
 
 *******************************************************************************
 ### If you are re-using a previously used (CA) certificate, you will need to add the hashes of the previous GRUB2 binaries exposed to the CVEs to vendor_dbx in shim in order to prevent GRUB2 from being able to chainload those older GRUB2 binaries. If you are changing to a new (CA) certificate, this does not apply.
 ### Please describe your strategy.
 *******************************************************************************
-[your text here]
+This is our first shim submission.
 
 *******************************************************************************
 ### What OS and toolchain must we use to reproduce this build?  Include where to find it, etc.  We're going to try to reproduce your build as closely as possible to verify that it's really a build of the source tree you tell us it is, so these need to be fairly thorough. At the very least include the specific versions of gcc, binutils, and gnu-efi which were used, and where to find those binaries.
 ### If the shim binaries can't be reproduced using the provided Dockerfile, please explain why that's the case and what the differences would be.
 *******************************************************************************
-[your text here]
+Dockerfile to reproduce this build is included.
 
 *******************************************************************************
 ### Which files in this repo are the logs for your build?
 This should include logs for creating the buildroots, applying patches, doing the build, creating the archives, etc.
 *******************************************************************************
-[your text here]
+build_log.txt
 
 *******************************************************************************
 ### What changes were made since your SHIM was last signed?
 *******************************************************************************
-[your text here]
+This is our first shim submission.
 
 *******************************************************************************
 ### What is the SHA256 hash of your final SHIM binary?
 *******************************************************************************
-[your text here]
+476c554e0c06c419083f2868bd58e2e9c3774a763f4f37b935b3537f450843d2  shimx64.efi
+ed64851489b8c77a54a79aba5f9969cfffaf3f47455008f11511c45225c69ea5  shimaa64.efi
 
 *******************************************************************************
 ### How do you manage and protect the keys used in your SHIM?
 *******************************************************************************
-[your text here]
+The keys are stored on HSM with restricted access.
 
 *******************************************************************************
 ### Do you use EV certificates as embedded certificates in the SHIM?
 *******************************************************************************
-[your text here]
+No.
 
 *******************************************************************************
 ### Do you add a vendor-specific SBAT entry to the SBAT section in each binary that supports SBAT metadata ( GRUB2, fwupd, fwupdate, shim + all child shim binaries )?
@@ -220,43 +221,52 @@ If you are using a downstream implementation of GRUB2 (e.g. from Fedora or Debia
 preserve the SBAT entry from those distributions and only append your own.
 More information on how SBAT works can be found [here](https://github.com/rhboot/shim/blob/main/SBAT.md).
 *******************************************************************************
-[your text here]
+shim:
+sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
+shim,3,UEFI shim,shim,1,https://github.com/rhboot/shim
+shim.fortios,1,Fortinet,shim,15.7,https://github.com/fortinet/shim-review
 
+grub:
+sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
+grub,4,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
+grub.fortios,1,Fortinet,grub2,2.06,https://www.fortinet.com/
 *******************************************************************************
 ### Which modules are built into your signed GRUB2 image?
 *******************************************************************************
-[your text here]
+normal search configfile part_msdos part_gpt fat ext2 linux tpm
+all_video gfxterm terminal echo
 
 *******************************************************************************
 ### What is the origin and full version number of your bootloader (GRUB2 or other)?
 *******************************************************************************
-[your text here]
+Upstream grub 2.06 with above CVE patches
+https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz
 
 *******************************************************************************
 ### If your SHIM launches any other components, please provide further details on what is launched.
 *******************************************************************************
-[your text here]
+N/A
 
 *******************************************************************************
 ### If your GRUB2 launches any other binaries that are not the Linux kernel in SecureBoot mode, please provide further details on what is launched and how it enforces Secureboot lockdown.
 *******************************************************************************
-[your text here]
+N/A
 
 *******************************************************************************
 ### How do the launched components prevent execution of unauthenticated code?
 *******************************************************************************
-[your text here]
+Our shim will only launch our signed GRUB2, which has built-in secure-boot support. GRUB2 will only launch our signed kernel, which is configured to enable lockdown.
 
 *******************************************************************************
 ### Does your SHIM load any loaders that support loading unsigned kernels (e.g. GRUB2)?
 *******************************************************************************
-[your text here]
+No.
 *******************************************************************************
 ### What kernel are you using? Which patches does it includes to enforce Secure Boot?
 *******************************************************************************
-[your text here]
+Our kernel is based on 4.19 with lockdown patch and enforces lockdown.
 
 *******************************************************************************
 ### Add any additional information you think we may need to validate this shim.
 *******************************************************************************
-[your text here]
+N/A
