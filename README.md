@@ -59,9 +59,9 @@ well known in the Linux community.)
 *******************************************************************************
 ### Who is the secondary contact for security updates, etc.?
 *******************************************************************************
-- Name: Alex Zou
+- Name: Lingbo Zou
 - Position: Senior Software Engineer
-- Email address:lzou@fortinet.com
+- Email address: lzou@fortinet.com
 - PGP key fingerprint: 94A4 E88B 4819 C5D8 5262  8513 7712 F4D0 F3CF 3EA7
 
 (Key should be signed by the other security contacts, pushed to a keyserver
