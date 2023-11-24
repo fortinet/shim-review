@@ -221,15 +221,15 @@ If you are using a downstream implementation of GRUB2 (e.g. from Fedora or Debia
 preserve the SBAT entry from those distributions and only append your own.
 More information on how SBAT works can be found [here](https://github.com/rhboot/shim/blob/main/SBAT.md).
 *******************************************************************************
-shim:
-sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-shim,3,UEFI shim,shim,1,https://github.com/rhboot/shim
-shim.fortios,1,Fortinet,shim,15.7,https://github.com/fortinet/shim-review
+shim:  
+sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md  
+shim,3,UEFI shim,shim,1,https://github.com/rhboot/shim  
+shim.fortios,1,Fortinet,shim,15.7,https://github.com/fortinet/shim-review  
 
-grub:
-sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-grub,4,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
-grub.fortios,1,Fortinet,grub2,2.06,https://www.fortinet.com/
+grub:  
+sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md  
+grub,4,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/  
+grub.fortios,1,Fortinet,grub2,2.06,https://www.fortinet.com/  
 *******************************************************************************
 ### Which modules are built into your signed GRUB2 image?
 *******************************************************************************
