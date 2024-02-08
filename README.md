@@ -11,8 +11,8 @@ This repo is for review of requests for signing shim.  To create a request for r
 - file an issue at https://github.com/rhboot/shim-review/issues with a link to your tag
 - approval is ready when the "accepted" label is added to your issue
 
-Note that we really only have experience with using GRUB2 on Linux, so asking
-us to endorse anything else for signing is going to require some convincing on
+Note that we really only have experience with using GRUB2 or systemd-boot on Linux, so
+asking us to endorse anything else for signing is going to require some convincing on
 your part.
 
 Check the docs directory in this repo for guidance on submission and
@@ -69,10 +69,10 @@ like keyserver.ubuntu.com, and preferably have signatures that are reasonably
 well known in the Linux community.)
 
 *******************************************************************************
-### Were these binaries created from the 15.7 shim release tar?
-Please create your shim binaries starting with the 15.7 shim release tar file: https://github.com/rhboot/shim/releases/download/15.7/shim-15.7.tar.bz2
+### Were these binaries created from the 15.8 shim release tar?
+Please create your shim binaries starting with the 15.8 shim release tar file: https://github.com/rhboot/shim/releases/download/15.8/shim-15.8.tar.bz2
 
-This matches https://github.com/rhboot/shim/releases/tag/15.7 and contains the appropriate gnu-efi source.
+This matches https://github.com/rhboot/shim/releases/tag/15.8 and contains the appropriate gnu-efi source.
 
 *******************************************************************************
 We confirm that our shim binaries are built from the referenced tarball.
@@ -80,17 +80,24 @@ We confirm that our shim binaries are built from the referenced tarball.
 *******************************************************************************
 ### URL for a repo that contains the exact code which was built to get this binary:
 *******************************************************************************
-https://github.com/rhboot/shim/tree/15.7
+https://github.com/rhboot/shim/tree/15.8
 
 *******************************************************************************
 ### What patches are being applied and why:
 *******************************************************************************
-No patches are applied
+No patches are applied.
+
+*******************************************************************************
+### Do you have the NX bit set in your shim? If so, is your entire boot stack NX-compatible and what testing have you done to ensure such compatibility?
+
+See https://techcommunity.microsoft.com/t5/hardware-dev-center/nx-exception-for-shim-community/ba-p/3976522 for more details on the signing of shim without NX bit.
+*******************************************************************************
+It's not set.
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader what exact implementation of Secureboot in GRUB2 do you have? (Either Upstream GRUB2 shim_lock verifier or Downstream RHEL/Fedora/Debian/Canonical-like implementation)
 *******************************************************************************
-Upstream GRUB2 2.06 with shim_lock verifier. This verifier is included as long as --disable-shim-lock wasn't passed to grub-mkimage (and we do not set that flag). The verifier is enabled automatically when UEFI Secure Boot is enabled. Reference:
+Upstream GRUB2 2.12 with shim_lock verifier. This verifier is included as long as --disable-shim-lock wasn't passed to grub-mkimage (and we do not set that flag). The verifier is enabled automatically when UEFI Secure Boot is enabled. Reference:
 https://www.gnu.org/software/grub/manual/grub/html_node/UEFI-secure-boot-and-shim.html
 
 *******************************************************************************
@@ -135,10 +142,10 @@ https://www.gnu.org/software/grub/manual/grub/html_node/UEFI-secure-boot-and-shi
   * CVE-2023-4693
   * CVE-2023-4692
 *******************************************************************************
-Yes.
+All these CVEs are included in grub-2.12.
 
 *******************************************************************************
-### If these fixes have been applied, is the upstream global SBAT generation in your GRUB2 binary set to 4?
+### If shim is loading GRUB2 bootloader, and if these fixes have been applied, is the upstream global SBAT generation in your GRUB2 binary set to 4?
 The entry should look similar to: `grub,4,Free Software Foundation,grub,GRUB_UPSTREAM_VERSION,https://www.gnu.org/software/grub/`
 *******************************************************************************
 Yes.
@@ -190,18 +197,19 @@ Dockerfile to reproduce this build is included.
 ### Which files in this repo are the logs for your build?
 This should include logs for creating the buildroots, applying patches, doing the build, creating the archives, etc.
 *******************************************************************************
-build_log.txt
+build_log.txt.
 
 *******************************************************************************
-### What changes were made since your SHIM was last signed?
+### What changes were made in the distor's secure boot chain since your SHIM was last signed?
+For example, signing new kernel's variants, UKI, systemd-boot, new certs, new CA, etc..
 *******************************************************************************
 This is our first shim submission.
 
 *******************************************************************************
 ### What is the SHA256 hash of your final SHIM binary?
 *******************************************************************************
-476c554e0c06c419083f2868bd58e2e9c3774a763f4f37b935b3537f450843d2  shimx64.efi
-ed64851489b8c77a54a79aba5f9969cfffaf3f47455008f11511c45225c69ea5  shimaa64.efi
+eb7f324221e23f94fa92193c495b35ed4bde274aab9c0f761ec9c0c37c9f90b0  build-x86_64/shimx64.efi
+0d25eecddf7306bff58f9739194bccca0a94d4f7bd7cb5d6097228a9fe4caf60  build-aarch64/shimaa64.efi
 
 *******************************************************************************
 ### How do you manage and protect the keys used in your SHIM?
@@ -214,33 +222,65 @@ The keys are stored on HSM with restricted access.
 No.
 
 *******************************************************************************
-### Do you add a vendor-specific SBAT entry to the SBAT section in each binary that supports SBAT metadata ( GRUB2, fwupd, fwupdate, shim + all child shim binaries )?
+### Do you add a vendor-specific SBAT entry to the SBAT section in each binary that supports SBAT metadata ( GRUB2, fwupd, fwupdate, systemd-boot, systemd-stub, shim + all child shim binaries )?
 ### Please provide exact SBAT entries for all SBAT binaries you are booting or planning to boot directly through shim.
 ### Where your code is only slightly modified from an upstream vendor's, please also preserve their SBAT entries to simplify revocation.
-If you are using a downstream implementation of GRUB2 (e.g. from Fedora or Debian), please
-preserve the SBAT entry from those distributions and only append your own.
-More information on how SBAT works can be found [here](https://github.com/rhboot/shim/blob/main/SBAT.md).
+If you are using a downstream implementation of GRUB2 or systemd-boot (e.g.
+from Fedora or Debian), please preserve the SBAT entry from those distributions
+and only append your own. More information on how SBAT works can be found
+[here](https://github.com/rhboot/shim/blob/main/SBAT.md).
 *******************************************************************************
 shim:  
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md  
-shim,3,UEFI shim,shim,1,https://github.com/rhboot/shim  
-shim.fortios,1,Fortinet,shim,15.7,https://github.com/fortinet/shim-review  
+shim,4,UEFI shim,shim,1,https://github.com/rhboot/shim  
+shim.fortios,1,Fortinet,shim,15.8,https://github.com/fortinet/shim-review  
 
 grub:  
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md  
-grub,4,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/  
-grub.fortios,1,Fortinet,grub2,2.06,https://www.fortinet.com/  
+grub,4,Free Software Foundation,grub,2.12,https://www.gnu.org/software/grub/  
+grub.fortios,1,Fortinet,grub2,2.12,https://www.fortinet.com/
+
 *******************************************************************************
-### Which modules are built into your signed GRUB2 image?
+### If shim is loading GRUB2 bootloader, which modules are built into your signed GRUB2 image?
 *******************************************************************************
 normal search configfile part_msdos part_gpt fat ext2 linux tpm
 all_video gfxterm terminal echo
 
 *******************************************************************************
-### What is the origin and full version number of your bootloader (GRUB2 or other)?
+### If you are using systemd-boot on arm64 or riscv, is the fix for [unverified Devicetree Blob loading](https://github.com/systemd/systemd/security/advisories/GHSA-6m6p-rjcq-334c) included?
 *******************************************************************************
-Upstream grub 2.06 with above CVE patches
-https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz
+We don't use systemd or systemd-boot.
+
+*******************************************************************************
+### What is the origin and full version number of your bootloader (GRUB2 or systemd-boot or other)?
+*******************************************************************************
+https://ftp.gnu.org/gnu/grub/grub-2.12.tar.xz
+
+Only two patches:
+1.copy one missing file from the tag grub-2.12
+diff --git a/grub-core/extra_deps.lst b/grub-core/extra_deps.lst
+new file mode 100644
+index 0000000..f44ad6a
+--- /dev/null
++++ b/grub-core/extra_deps.lst
+@@ -0,0 +1 @@
++depends bli part_gpt
+
+2. hide a error message
+diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
+index 977757f..8cc90a6 100644
+--- a/grub-core/loader/i386/linux.c
++++ b/grub-core/loader/i386/linux.c
+@@ -463,8 +463,8 @@ grub_linux_boot (void)
+ 
+   if (err)
+     {
+-      grub_print_error ();
+-      grub_puts_ (N_("Booting in blind mode"));
++      //grub_print_error ();
++      //grub_puts_ (N_("Booting in blind mode"));
+       grub_errno = GRUB_ERR_NONE;
+     }
 
 *******************************************************************************
 ### If your SHIM launches any other components, please provide further details on what is launched.
@@ -248,7 +288,7 @@ https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz
 N/A
 
 *******************************************************************************
-### If your GRUB2 launches any other binaries that are not the Linux kernel in SecureBoot mode, please provide further details on what is launched and how it enforces Secureboot lockdown.
+### If your GRUB2 or systemd-boot launches any other binaries that are not the Linux kernel in SecureBoot mode, please provide further details on what is launched and how it enforces Secureboot lockdown.
 *******************************************************************************
 N/A
 
