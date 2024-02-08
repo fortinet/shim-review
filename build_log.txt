@@ -1,27 +1,27 @@
-Sending build context to Docker daemon  4.269MB
+Sending build context to Docker daemon  4.011MB
 Step 1/17 : FROM ubuntu:22.04
  ---> e4c58958181a
 Step 2/17 : RUN apt-get update && apt-get install -y     bzip2     curl     gcc     gcc-aarch64-linux-gnu     make     tar
- ---> Running in 8fcf3f0e1f3c
+ ---> Running in 8be306a65d4a
 Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
 Get:2 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
-Get:3 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [44.6 kB]
-Get:4 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1064 kB]
-Get:5 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [1436 kB]
-Get:6 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [1746 kB]
-Get:7 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]
-Get:8 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [109 kB]
-Get:9 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
-Get:10 http://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
+Get:3 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [1746 kB]
+Get:4 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]
+Get:5 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [109 kB]
+Get:6 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+Get:7 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
+Get:8 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1065 kB]
+Get:9 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [44.6 kB]
+Get:10 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [1436 kB]
 Get:11 http://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1792 kB]
-Get:12 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+Get:12 http://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
 Get:13 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [50.4 kB]
-Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1334 kB]
-Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [1723 kB]
-Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [1800 kB]
-Get:17 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [28.1 kB]
-Get:18 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [50.4 kB]
-Fetched 29.6 MB in 4s (7356 kB/s)
+Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1335 kB]
+Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [1728 kB]
+Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [1810 kB]
+Get:17 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [50.4 kB]
+Get:18 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [28.1 kB]
+Fetched 29.6 MB in 4s (7278 kB/s)
 Reading package lists...
 Reading package lists...
 Building dependency tree...
@@ -180,7 +180,7 @@ Get:95 http://archive.ubuntu.com/ubuntu jammy/main amd64 manpages-dev all 5.10-1
 Get:96 http://archive.ubuntu.com/ubuntu jammy/main amd64 linux-libc-dev-arm64-cross all 5.15.0-22.22cross3 [1216 kB]
 Get:97 http://archive.ubuntu.com/ubuntu jammy/main amd64 libc6-dev-arm64-cross all 2.35-0ubuntu1cross3 [1546 kB]
 [91mdebconf: delaying package configuration, since apt-utils is not installed
-[0mFetched 109 MB in 9s (11.9 MB/s)
+[0mFetched 109 MB in 11s (10.1 MB/s)
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 4395 files and directories currently installed.)
 Preparing to unpack .../tar_1.34+dfsg-1ubuntu0.1.22.04.2_amd64.deb ...
 Unpacking tar (1.34+dfsg-1ubuntu0.1.22.04.2) over (1.34+dfsg-1ubuntu0.1.22.04.1) ...
@@ -603,33 +603,33 @@ Updating certificates in /etc/ssl/certs...
 0 added, 0 removed; done.
 Running hooks in /etc/ca-certificates/update.d...
 done.
-Removing intermediate container 8fcf3f0e1f3c
- ---> a517b75e8ba7
+Removing intermediate container 8be306a65d4a
+ ---> a6f821f63244
 Step 3/17 : RUN mkdir -p /build/shim
- ---> Running in 250e2cef2418
-Removing intermediate container 250e2cef2418
- ---> 78de72261bbe
+ ---> Running in 4bd00952bfad
+Removing intermediate container 4bd00952bfad
+ ---> b235bb287627
 Step 4/17 : WORKDIR /build/shim
- ---> Running in 5feae2ae199c
-Removing intermediate container 5feae2ae199c
- ---> e3117bb553f7
+ ---> Running in 63fc24be86ac
+Removing intermediate container 63fc24be86ac
+ ---> e1ca6e4a05a2
 Step 5/17 : ADD shim-15.8.sum .
- ---> e46c25281e42
+ ---> 8701b47249ba
 Step 6/17 : RUN curl --location --remote-name https://github.com/rhboot/shim/releases/download/15.8/shim-15.8.tar.bz2
- ---> Running in 4d837dc6d056
-[91m  % Total    % [0m[91mReceiv[0m[91med % Xferd[0m[91m  Aver[0m[91mage[0m[91m S[0m[91mpee[0m[91md   [0m[91mTi[0m[91mme [0m[91m   [0m[91mTi[0m[91mme[0m[91m   [0m[91m  T[0m[91mi[0m[91mme[0m[91m  Cu[0m[91mr[0m[91mre[0m[91mnt
-[0m[91m   [0m[91m  [0m[91m  [0m[91m   [0m[91m  [0m[91m  [0m[91m   [0m[91m   [0m[91m  [0m[91m  [0m[91m   [0m[91m   [0m[91m  [0m[91m D[0m[91mload[0m[91m  [0m[91mUplo[0m[91mad  [0m[91m [0m[91mTo[0m[91mtal [0m[91m  S[0m[91mp[0m[91ment [0m[91m   [0m[91mL[0m[91meft[0m[91m  S[0m[91mpe[0m[91med[0m[91m
-[0m[91m  0[0m[91m  [0m[91m  [0m[91m 0 [0m[91m   0[0m[91m [0m[91m   [0m[91m 0 [0m[91m   [0m[91m0 [0m[91m  [0m[91m  [0m[91m0  [0m[91m   [0m[91m 0[0m[91m  [0m[91m    [0m[91m0 [0m[91m--[0m[91m:-[0m[91m-:-[0m[91m- -[0m[91m-[0m[91m:--[0m[91m:-- [0m[91m-[0m[91m-[0m[91m:[0m[91m--:--[0m[91m [0m[91m [0m[91m  [0m[91m [0m[91m0[0m[91m  0     0    0     0    0     0      0      0 [0m[91m--:--:-- --:--:-- --:--:--     0
-[0m[91m  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0[0m[91m100 2260k  100 2260k    0     0  3317k      0 --:--:-- --:--:-- --:--:-- 8103k
-[0mRemoving intermediate container 4d837dc6d056
- ---> 22daaf7f3f72
+ ---> Running in ea4735fdd685
+[91m [0m[91m % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0 [0m[91m     0      0 --:--:-- --:--:-- --:--:--     0[0m[91m  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+[0m[91m  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0[0m[91m100 2260k  100 2260k    0     0  3379k      0 --:--:-- [0m[91m--:-[0m[91m-[0m[91m:[0m[91m-[0m[91m- [0m[91m--[0m[91m:--[0m[91m:-[0m[91m- [0m[91m85[0m[91m96k[0m[91m
+[0mRemoving intermediate container ea4735fdd685
+ ---> 4ba1eef0aa41
 Step 7/17 : RUN sha256sum --check shim-15.8.sum
- ---> Running in 99224ab1e5db
+ ---> Running in 53cd655863c0
 shim-15.8.tar.bz2: OK
-Removing intermediate container 99224ab1e5db
- ---> 31ce4adf3011
+Removing intermediate container 53cd655863c0
+ ---> 55a9ddc5865c
 Step 8/17 : RUN tar -jxvpf shim-15.8.tar.bz2 && rm shim-15.8.tar.bz2
- ---> Running in 9a842a80f4a4
+ ---> Running in facde0479277
 shim-15.8/
 shim-15.8/.clang-format
 shim-15.8/.github/
@@ -1720,26 +1720,26 @@ shim-15.8/testplan.txt
 shim-15.8/tpm.c
 shim-15.8/version.c.in
 shim-15.8/version.h
-Removing intermediate container 9a842a80f4a4
- ---> 31f37d51f3be
+Removing intermediate container facde0479277
+ ---> 70060ca09ca3
 Step 9/17 : WORKDIR /build/shim/shim-15.8
- ---> Running in d597f850ebb9
-Removing intermediate container d597f850ebb9
- ---> e3b965774ba9
+ ---> Running in 048551148c82
+Removing intermediate container 048551148c82
+ ---> ec1279e50348
 Step 10/17 : ADD fortinet-ca2.der .
- ---> 448251434c9b
+ ---> 3315347f5e38
 Step 11/17 : ADD sbat.csv data/sbat.csv
- ---> 5f675d93e992
+ ---> fdb4260b1b99
 Step 12/17 : RUN mkdir build-x86_64
- ---> Running in 2e9d2b4aa94a
-Removing intermediate container 2e9d2b4aa94a
- ---> cab9a40850ac
+ ---> Running in 069ca2d2c291
+Removing intermediate container 069ca2d2c291
+ ---> 6a23e92be0e2
 Step 13/17 : RUN mkdir build-aarch64
- ---> Running in a5af5c2e4efd
-Removing intermediate container a5af5c2e4efd
- ---> 1b3e08a453df
+ ---> Running in 70b8441f5c26
+Removing intermediate container 70b8441f5c26
+ ---> 09c9b682b29b
 Step 14/17 : RUN make -C build-x86_64 ARCH=x86_64     VENDOR_CERT_FILE=../fortinet-ca2.der     TOPDIR=.. -f ../Makefile
- ---> Running in ff49cafd70a0
+ ---> Running in df54c0b049e2
 make: Entering directory '/build/shim/shim-15.8/build-x86_64'
 sed	-e "s,@@VERSION@@,15.8," \
 	-e "s,@@UNAME@@,Linux x86_64 x86_64 x86_64 GNU/Linux," \
@@ -2376,10 +2376,10 @@ objcopy -D -j .text -j .sdata -j .data -j .data.ident \
 	--target efi-app-x86_64 fbx64.so fbx64.efi
 ./post-process-pe -vv  fbx64.efi
 make: Leaving directory '/build/shim/shim-15.8/build-x86_64'
-Removing intermediate container ff49cafd70a0
- ---> 58beb0ee88d7
+Removing intermediate container df54c0b049e2
+ ---> 3271857bb557
 Step 15/17 : RUN make -C build-aarch64 ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu-     VENDOR_CERT_FILE=../fortinet-ca2.der     TOPDIR=.. -f ../Makefile
- ---> Running in 2008c2dec154
+ ---> Running in 8a7ad47ff149
 make: Entering directory '/build/shim/shim-15.8/build-aarch64'
 sed	-e "s,@@VERSION@@,15.8," \
 	-e "s,@@UNAME@@,Linux x86_64 x86_64 x86_64 GNU/Linux," \
@@ -2911,7 +2911,7 @@ aarch64-linux-gnu-gcc -I/build/shim/shim-15.8/gnu-efi//lib -I/build/shim/shim-15
 [91m/build/shim/shim-15.8/gnu-efi//lib/aarch64/setjmp.S: Assembler messages:
 /build/shim/shim-15.8/gnu-efi//lib/aarch64/setjmp.S:61: Warning: setting incorrect section attributes for .note.GNU-stack
 [0maarch64-linux-gnu-gcc-ar rv -U libefi.a boxdraw.o smbios.o console.o crc.o data.o debug.o dpath.o error.o event.o exit.o guid.o hand.o hw.o init.o lock.o misc.o pause.o print.o sread.o str.o cmdline.o runtime/rtlock.o runtime/efirtlib.o runtime/rtstr.o runtime/vm.o runtime/rtdata.o aarch64/initplat.o aarch64/math.o aarch64/setjmp.o
-[91m/usr/lib/gcc-cross/aarch64-linux-gnu/11/../../../../aarch64-linux-gnu/bin/ar: creating libefi.a
+[91m/usr/lib/gcc-cross/aarch64-linux-gnu/11/../../../../aarch64-linux-gnu/bin/ar: [0m[91mcreating libefi.a[0m[91m
 [0ma - boxdraw.o
 a - smbios.o
 a - console.o
@@ -3010,16 +3010,17 @@ aarch64-linux-gnu-objcopy -D -j .text -j .sdata -j .data -j .data.ident \
 	--target efi-app-aarch64 fbaa64.so fbaa64.efi
 ./post-process-pe -vv  fbaa64.efi
 make: Leaving directory '/build/shim/shim-15.8/build-aarch64'
-Removing intermediate container 2008c2dec154
- ---> 19e6d1c7e522
+Removing intermediate container 8a7ad47ff149
+ ---> 2a2942b6af50
 Step 16/17 : RUN sha256sum build-x86_64/shimx64.efi
- ---> Running in 7bf679af70fe
-9185db82402815a004ed5d6a821b3993e730a58708a54e1ad5121c5743b22c0e  build-x86_64/shimx64.efi
-Removing intermediate container 7bf679af70fe
- ---> bef7216af566
+ ---> Running in 476ae5ffe333
+eb7f324221e23f94fa92193c495b35ed4bde274aab9c0f761ec9c0c37c9f90b0  build-x86_64/shimx64.efi
+Removing intermediate container 476ae5ffe333
+ ---> 675f18ccc4c0
 Step 17/17 : RUN sha256sum build-aarch64/shimaa64.efi
- ---> Running in 4e7caa06060b
-f04eb4fd2344639bb1c55a7066d78d3976887069620a26193aeaf2e774f5624d  build-aarch64/shimaa64.efi
-Removing intermediate container 4e7caa06060b
- ---> 35b5ae4795ea
-Successfully built 35b5ae4795ea
+ ---> Running in 2ecb09cc148a
+0d25eecddf7306bff58f9739194bccca0a94d4f7bd7cb5d6097228a9fe4caf60  build-aarch64/shimaa64.efi
+Removing intermediate container 2ecb09cc148a
+ ---> 1f26dc9842f3
+Successfully built 1f26dc9842f3
+Successfully tagged shim:latest
