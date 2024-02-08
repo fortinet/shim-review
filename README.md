@@ -256,31 +256,9 @@ We don't use systemd or systemd-boot.
 *******************************************************************************
 https://ftp.gnu.org/gnu/grub/grub-2.12.tar.xz
 
-Only two patches:
-1.copy one missing file from the tag grub-2.12
-diff --git a/grub-core/extra_deps.lst b/grub-core/extra_deps.lst
-new file mode 100644
-index 0000000..f44ad6a
---- /dev/null
-+++ b/grub-core/extra_deps.lst
-@@ -0,0 +1 @@
-+depends bli part_gpt
-
-2. hide a error message
-diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
-index 977757f..8cc90a6 100644
---- a/grub-core/loader/i386/linux.c
-+++ b/grub-core/loader/i386/linux.c
-@@ -463,8 +463,8 @@ grub_linux_boot (void)
- 
-   if (err)
-     {
--      grub_print_error ();
--      grub_puts_ (N_("Booting in blind mode"));
-+      //grub_print_error ();
-+      //grub_puts_ (N_("Booting in blind mode"));
-       grub_errno = GRUB_ERR_NONE;
-     }
+[Only two patches](grub-patch/)
+1. Copy one missing file grub-core/extra_deps.lst from the tag grub-2.12
+2. Hide a error message
 
 *******************************************************************************
 ### If your SHIM launches any other components, please provide further details on what is launched.
