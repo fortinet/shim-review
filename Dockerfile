@@ -10,11 +10,11 @@ RUN apt-get update && apt-get install -y \
 # Download the shim tarball, verify and extract.
 RUN mkdir -p /build/shim
 WORKDIR /build/shim
-ADD shim-15.7.sum .
-RUN curl --location --remote-name https://github.com/rhboot/shim/releases/download/15.7/shim-15.7.tar.bz2
-RUN sha256sum --check shim-15.7.sum
-RUN tar -jxvpf shim-15.7.tar.bz2 && rm shim-15.7.tar.bz2
-WORKDIR /build/shim/shim-15.7
+ADD shim-15.8.sum .
+RUN curl --location --remote-name https://github.com/rhboot/shim/releases/download/15.8/shim-15.8.tar.bz2
+RUN sha256sum --check shim-15.8.sum
+RUN tar -jxvpf shim-15.8.tar.bz2 && rm shim-15.8.tar.bz2
+WORKDIR /build/shim/shim-15.8
 
 # Add our public certificate
 ADD fortinet-ca2.der .
