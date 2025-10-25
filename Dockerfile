@@ -17,7 +17,7 @@ RUN tar -jxvpf shim-15.8.tar.bz2 && rm shim-15.8.tar.bz2
 WORKDIR /build/shim/shim-15.8
 
 # Add our public certificate
-ADD fortinet-ca2.der .
+ADD fortinet-subca2002.der .
 # Add our SBAT data
 ADD sbat.csv data/sbat.csv
 
@@ -27,11 +27,11 @@ RUN mkdir build-aarch64
 
 # Build x86_64
 RUN make -C build-x86_64 ARCH=x86_64 \
-    VENDOR_CERT_FILE=../fortinet-ca2.der \
+    VENDOR_CERT_FILE=../fortinet-subca2002.der \
     TOPDIR=.. -f ../Makefile
 # Build aarch64
 RUN make -C build-aarch64 ARCH=aarch64 CROSS_COMPILE=aarch64-linux-gnu- \
-    VENDOR_CERT_FILE=../fortinet-ca2.der \
+    VENDOR_CERT_FILE=../fortinet-subca2002.der \
     TOPDIR=.. -f ../Makefile
 
 # Print the SHA256 of the shims.
