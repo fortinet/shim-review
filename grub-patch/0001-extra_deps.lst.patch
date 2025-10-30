@@ -1,0 +1,13 @@
+commit 2c8fddeae7bc4ea7615a02e05799551e7009be02
+Author: Colin Wen <gwen@fortinet.com>
+Date:   Wed Feb 7 15:38:50 2024 -0800
+
+    Add extra_deps.lst
+
+diff --git a/grub-core/extra_deps.lst b/grub-core/extra_deps.lst
+new file mode 100644
+index 0000000..f44ad6a
+--- /dev/null
++++ b/grub-core/extra_deps.lst
+@@ -0,0 +1 @@
++depends bli part_gpt

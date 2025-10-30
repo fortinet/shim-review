@@ -1,0 +1,245 @@
+commit 594a8bfedecefccc24cd4d6bb86b3b4c2c9ac309
+Author: Colin Wen <gwen@fortinet.com>
+Date:   Tue Nov 14 14:50:07 2023 -0800
+
+    gwen-266603: Lockdown patch required by shim-review
+    
+    Purpose: For internal code change
+    
+    Mantis: #0970978
+    
+    Description:
+    Shim(UEFI bootloader) third party signature needs shim-review,
+    shim-review requires three kernel lockdown patches.
+    1. commit 1957a85b0032a81e6482ca4aab883643b8dae06e "efi: Restrict efivar_ssdt_load when the kernel is locked down"
+    2. commit 75b0cea7bf307f362057cc778efe89af4c615354 "ACPI: configfs: Disallow loading ACPI tables when locked down"
+    3. commit eadb2f47a3ced5c64b23b90fd2a3463f63726066 "lockdown: also lock down previous kgdb use"
+    
+    To avoid pulling in other paches like LSM_EARLY support, used simple lockdown function instead of LSM.
+    
+    Technical Detail:
+
+diff --git a/linux-4.19.13/.config_common_arm64_vm b/linux-4.19.13/.config_common_arm64_vm
+index 9226d2f7ae4..83d6098a7c3 100644
+--- a/linux-4.19.13/.config_common_arm64_vm
++++ b/linux-4.19.13/.config_common_arm64_vm
+@@ -1197,3 +1197,4 @@ CONFIG_INTEGRITY=y
+ CONFIG_FORTINET_LSM=y
+ CONFIG_SECURITY_PATH=y
+ CONFIG_SECURITYFS=y
++CONFIG_SECURITY_LOCKDOWN=y
+diff --git a/linux-4.19.13/.config_common_x86_64_vm b/linux-4.19.13/.config_common_x86_64_vm
+index 7d5923af4c5..0f5596f0e56 100644
+--- a/linux-4.19.13/.config_common_x86_64_vm
++++ b/linux-4.19.13/.config_common_x86_64_vm
+@@ -1210,3 +1210,4 @@ CONFIG_INTEGRITY=y
+ CONFIG_FORTINET_LSM=y
+ CONFIG_SECURITY_PATH=y
+ CONFIG_SECURITYFS=y
++CONFIG_SECURITY_LOCKDOWN=y
+diff --git a/linux-4.19.13/drivers/acpi/acpi_configfs.c b/linux-4.19.13/drivers/acpi/acpi_configfs.c
+index b5885038909..ecdcbf1445f 100644
+--- a/linux-4.19.13/drivers/acpi/acpi_configfs.c
++++ b/linux-4.19.13/drivers/acpi/acpi_configfs.c
+@@ -14,6 +14,7 @@
+ #include <linux/module.h>
+ #include <linux/configfs.h>
+ #include <linux/acpi.h>
++#include <linux/security.h>
+ 
+ #include "acpica/accommon.h"
+ #include "acpica/actables.h"
+@@ -31,7 +32,10 @@ static ssize_t acpi_table_aml_write(struct config_item *cfg,
+ {
+ 	const struct acpi_table_header *header = data;
+ 	struct acpi_table *table;
+-	int ret;
++	int ret = security_locked_down(LOCKDOWN_ACPI_TABLES);
++
++	if (ret)
++		return ret;
+ 
+ 	table = container_of(cfg, struct acpi_table, cfg);
+ 
+diff --git a/linux-4.19.13/drivers/firmware/efi/efi.c b/linux-4.19.13/drivers/firmware/efi/efi.c
+index 2a29dd9c986..35e990a8433 100644
+--- a/linux-4.19.13/drivers/firmware/efi/efi.c
++++ b/linux-4.19.13/drivers/firmware/efi/efi.c
+@@ -31,6 +31,7 @@
+ #include <linux/acpi.h>
+ #include <linux/ucs2_string.h>
+ #include <linux/memblock.h>
++#include <linux/security.h>
+ 
+ #include <asm/early_ioremap.h>
+ 
+@@ -241,6 +242,11 @@ static void generic_ops_unregister(void)
+ static char efivar_ssdt[EFIVAR_SSDT_NAME_MAX] __initdata;
+ static int __init efivar_ssdt_setup(char *str)
+ {
++	int ret = security_locked_down(LOCKDOWN_ACPI_TABLES);
++
++	if (ret)
++		return ret;
++
+ 	if (strlen(str) < sizeof(efivar_ssdt))
+ 		memcpy(efivar_ssdt, str, strlen(str));
+ 	else
+diff --git a/linux-4.19.13/include/linux/security.h b/linux-4.19.13/include/linux/security.h
+index c7dbc554a10..a63382ebc1a 100644
+--- a/linux-4.19.13/include/linux/security.h
++++ b/linux-4.19.13/include/linux/security.h
+@@ -70,6 +70,23 @@ enum lsm_event {
+ 	LSM_POLICY_CHANGE,
+ };
+ 
++enum lockdown_reason {
++	LOCKDOWN_NONE,
++	LOCKDOWN_ACPI_TABLES,
++	LOCKDOWN_DBG_WRITE_KERNEL,
++	LOCKDOWN_INTEGRITY_MAX,
++	LOCKDOWN_DBG_READ_KERNEL,
++	LOCKDOWN_CONFIDENTIALITY_MAX,
++};
++
++static inline int security_locked_down(enum lockdown_reason what)
++{
++#ifdef CONFIG_SECURITY_LOCKDOWN
++	return -EPERM;
++#endif
++	return 0;
++}
++
+ /* These functions are in security/commoncap.c */
+ extern int cap_capable(const struct cred *cred, struct user_namespace *ns,
+ 		       int cap, int audit);
+diff --git a/linux-4.19.13/kernel/debug/debug_core.c b/linux-4.19.13/kernel/debug/debug_core.c
+index 65c0f136378..d67efcc6501 100644
+--- a/linux-4.19.13/kernel/debug/debug_core.c
++++ b/linux-4.19.13/kernel/debug/debug_core.c
+@@ -55,6 +55,7 @@
+ #include <linux/mm.h>
+ #include <linux/vmacache.h>
+ #include <linux/rcupdate.h>
++#include <linux/security.h>
+ 
+ #include <asm/cacheflush.h>
+ #include <asm/byteorder.h>
+@@ -628,6 +629,29 @@ cpu_master_loop:
+ 				continue;
+ 			kgdb_connected = 0;
+ 		} else {
++			/*
++			 * This is a brutal way to interfere with the debugger
++			 * and prevent gdb being used to poke at kernel memory.
++			 * This could cause trouble if lockdown is applied when
++			 * there is already an active gdb session. For now the
++			 * answer is simply "don't do that". Typically lockdown
++			 * *will* be applied before the debug core gets started
++			 * so only developers using kgdb for fairly advanced
++			 * early kernel debug can be biten by this. Hopefully
++			 * they are sophisticated enough to take care of
++			 * themselves, especially with help from the lockdown
++			 * message printed on the console!
++			 */
++			if (security_locked_down(LOCKDOWN_DBG_WRITE_KERNEL)) {
++				if (IS_ENABLED(CONFIG_KGDB_KDB)) {
++					/* Switch back to kdb if possible... */
++					dbg_kdb_mode = 1;
++					continue;
++				} else {
++					/* ... otherwise just bail */
++					break;
++				}
++			}
+ 			error = gdb_serial_stub(ks);
+ 		}
+ 
+diff --git a/linux-4.19.13/kernel/debug/kdb/kdb_main.c b/linux-4.19.13/kernel/debug/kdb/kdb_main.c
+index f338d23b112..dd1e1d8b26f 100644
+--- a/linux-4.19.13/kernel/debug/kdb/kdb_main.c
++++ b/linux-4.19.13/kernel/debug/kdb/kdb_main.c
+@@ -45,6 +45,7 @@
+ #include <linux/proc_fs.h>
+ #include <linux/uaccess.h>
+ #include <linux/slab.h>
++#include <linux/security.h>
+ #include "kdb_private.h"
+ 
+ #undef	MODULE_PARAM_PREFIX
+@@ -198,10 +199,62 @@ struct task_struct *kdb_curr_task(int cpu)
+ }
+ 
+ /*
+- * Check whether the flags of the current command and the permissions
+- * of the kdb console has allow a command to be run.
++ * Update the permissions flags (kdb_cmd_enabled) to match the
++ * current lockdown state.
++ *
++ * Within this function the calls to security_locked_down() are "lazy". We
++ * avoid calling them if the current value of kdb_cmd_enabled already excludes
++ * flags that might be subject to lockdown. Additionally we deliberately check
++ * the lockdown flags independently (even though read lockdown implies write
++ * lockdown) since that results in both simpler code and clearer messages to
++ * the user on first-time debugger entry.
++ *
++ * The permission masks during a read+write lockdown permits the following
++ * flags: INSPECT, SIGNAL, REBOOT (and ALWAYS_SAFE).
++ *
++ * The INSPECT commands are not blocked during lockdown because they are
++ * not arbitrary memory reads. INSPECT covers the backtrace family (sometimes
++ * forcing them to have no arguments) and lsmod. These commands do expose
++ * some kernel state but do not allow the developer seated at the console to
++ * choose what state is reported. SIGNAL and REBOOT should not be controversial,
++ * given these are allowed for root during lockdown already.
++ */
++static void kdb_check_for_lockdown(void)
++{
++	const int write_flags = KDB_ENABLE_MEM_WRITE |
++				KDB_ENABLE_REG_WRITE |
++				KDB_ENABLE_FLOW_CTRL;
++	const int read_flags = KDB_ENABLE_MEM_READ |
++			       KDB_ENABLE_REG_READ;
++
++	bool need_to_lockdown_write = false;
++	bool need_to_lockdown_read = false;
++
++	if (kdb_cmd_enabled & (KDB_ENABLE_ALL | write_flags))
++		need_to_lockdown_write =
++			security_locked_down(LOCKDOWN_DBG_WRITE_KERNEL);
++
++	if (kdb_cmd_enabled & (KDB_ENABLE_ALL | read_flags))
++		need_to_lockdown_read =
++			security_locked_down(LOCKDOWN_DBG_READ_KERNEL);
++
++	/* De-compose KDB_ENABLE_ALL if required */
++	if (need_to_lockdown_write || need_to_lockdown_read)
++		if (kdb_cmd_enabled & KDB_ENABLE_ALL)
++			kdb_cmd_enabled = KDB_ENABLE_MASK & ~KDB_ENABLE_ALL;
++
++	if (need_to_lockdown_write)
++		kdb_cmd_enabled &= ~write_flags;
++
++	if (need_to_lockdown_read)
++		kdb_cmd_enabled &= ~read_flags;
++}
++
++/*
++ * Check whether the flags of the current command, the permissions of the kdb
++ * console and the lockdown state allow a command to be run.
+  */
+-static inline bool kdb_check_flags(kdb_cmdflags_t flags, int permissions,
++static bool kdb_check_flags(kdb_cmdflags_t flags, int permissions,
+ 				   bool no_args)
+ {
+ 	/* permissions comes from userspace so needs massaging slightly */
+@@ -1188,6 +1241,9 @@ static int kdb_local(kdb_reason_t reason, int error, struct pt_regs *regs,
+ 		kdb_curr_task(raw_smp_processor_id());
+ 
+ 	KDB_DEBUG_STATE("kdb_local 1", reason);
++
++	kdb_check_for_lockdown();
++
+ 	kdb_go_count = 0;
+ 	if (reason == KDB_REASON_DEBUG) {
+ 		/* special case below */

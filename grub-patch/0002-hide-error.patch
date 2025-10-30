@@ -1,0 +1,15 @@
+diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
+index 977757f..8cc90a6 100644
+--- a/grub-core/loader/i386/linux.c
++++ b/grub-core/loader/i386/linux.c
+@@ -463,8 +463,8 @@ grub_linux_boot (void)
+ 
+   if (err)
+     {
+-      grub_print_error ();
+-      grub_puts_ (N_("Booting in blind mode"));
++      //grub_print_error ();
++      //grub_puts_ (N_("Booting in blind mode"));
+       grub_errno = GRUB_ERR_NONE;
+     }
+ 
