@@ -382,7 +382,7 @@ No.
 *******************************************************************************
 ### What kernel are you using? Which patches and configuration does it include to enforce Secure Boot?
 *******************************************************************************
-Our kernel is based on 4.19 with [lockdown patches](kernel-path) and enforces lockdown.
+Our kernel is based on 4.19 with [lockdown patches](kernel-patch) and enforces lockdown.
 
 *******************************************************************************
 ### What contributions have you made to help us review the applications of other applicants?
